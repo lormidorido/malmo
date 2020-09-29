@@ -1,5 +1,23 @@
 # Malmö #
 
+# Recommended setup method
+- 1, clone this repository (```git clone https://github.com/martinballa/malmo```)
+- 1.1, change branch to "gameai" : ```git checkout gameai```
+- 2, make sure you have java 8 installed (newer version might not work) and python 3
+- 3, create a virtual env and ```pip install -r gameai/requirements.txt``` <!-- ```pip install -e MalmoEnv/``` -->
+- 4, (optional): to run malmo headless on a linux headless server you should install xvfb-run ```sudo apt-get install -y xvfb```
+
+## Changes from Master
+- added examples and merged repo for easier setup - no need to setup both malmo and the example project
+- This version has the launcher and some other minor fixes that make working with malmo easier
+
+## Usage
+Instance manager + mission file + arguments
+
+When starting the Malmo instances it might take some time. Note that when using more than one instances ```launch_minecraft``` creates copies of the Minecraft directory in ```/tmp``` as each Minecraft instance requires its own directory. This process can take time.
+
+
+
 Project Malmö is a platform for Artificial Intelligence experimentation and research built on top of Minecraft. We aim to inspire a new generation of research into challenging new problems presented by this unique environment.
 
 [![Join the chat at https://gitter.im/Microsoft/malmo](https://badges.gitter.im/Microsoft/malmo.svg)](https://gitter.im/Microsoft/malmo?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Build Status](https://travis-ci.org/Microsoft/malmo.svg?branch=master)](https://travis-ci.org/Microsoft/malmo) [![license](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)](https://github.com/Microsoft/malmo/blob/master/LICENSE.txt)
