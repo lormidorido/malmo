@@ -7,6 +7,14 @@
 - 3, create a virtual env and ```pip install -r gameai/requirements.txt``` <!-- ```pip install -e MalmoEnv/``` -->
 - 4, (optional): to run malmo headless on a linux headless server you should install xvfb-run ```sudo apt-get install -y xvfb```
 
+## Creating a virtualenv
+```
+python3 -m venv <venv>
+source <venv>/bin/activate
+pip install opencv-python
+pip install -e MalmoEnv/
+```
+
 ## Changes from Master
 - added examples and merged repo for easier setup - no need to setup both malmo and the example project
 - This version has the launcher and some other minor fixes that make working with malmo easier
@@ -16,7 +24,7 @@ Instance manager + mission file + arguments
 
 When starting the Malmo instances it might take some time. Note that when using more than one instances ```launch_minecraft``` creates copies of the Minecraft directory in ```/tmp``` as each Minecraft instance requires its own directory. This process can take time.
 
-
+# Original Readme below
 
 Project Malmö is a platform for Artificial Intelligence experimentation and research built on top of Minecraft. We aim to inspire a new generation of research into challenging new problems presented by this unique environment.
 
