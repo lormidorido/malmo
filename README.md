@@ -1,23 +1,40 @@
 # Malmö #
 
-# Recommended setup method
-- 1, clone this repository (```git clone https://github.com/martinballa/malmo```)
-- 1.1, change branch to "gameai" : ```git checkout gameai```
-- 2, make sure you have java 8 installed (newer version might not work) and python 3
-- 3, create a virtual env and ```pip install -r gameai/requirements.txt``` <!-- ```pip install -e MalmoEnv/``` -->
-- 4, (optional): to run malmo headless on a linux headless server you should install xvfb-run ```sudo apt-get install -y xvfb```
+# Recommended setup method on your own machine
+- 1, clone malmo (```git clone https://github.com/martinballa/malmo```)
+- 2, change branch to "gameai" : ```git checkout gameai```
+- 3, install java 8 and python 3. 
+- 4, ```cd malmo/``` and install malmo using pip ```pip install -e MalmoEnv/``` 
+- 5, Test if Malmo works correctly by running ```main.py``` in the ```gameai``` folder
+- (optional): to run malmo headless on a linux headless server you should install xvfb ```sudo apt-get install -y xvfb```
 
-## Creating a virtualenv
+# Running on the ITL machines 
+
 ```
-python3 -m venv <venv>
+# clone repo and change branch
+git clone https://github.com/martinballa/malmo
+git checkout gameai
+cd malmo/
+
+module load java/1.8.0_181-oracle
+# create python virtualenv
+python -m venv <venv> # <venv> is the name of you virtualenv i.e: "malmoenv" or "venv"
 source <venv>/bin/activate
+
+# install opencv and malmoenv
 pip install opencv-python
 pip install -e MalmoEnv/
+
+cd gameai
+python main.py
+# this should startup Minecraft and display it on the screen. Note that his might take 1-2 minutes.
 ```
 
 ## Changes from Master
 - added examples and merged repo for easier setup - no need to setup both malmo and the example project
 - This version has the launcher and some other minor fixes that make working with malmo easier
+
+Each Minecraft instance require a new directory to run it, so using the launcher copies Minecraft into the /tmp directory. In case of failure in /tmp/malmo_<hash>/malmo/out.txt provides the console output from the startup, which can help in debugging. 
 
 ## Usage
 Instance manager + mission file + arguments
