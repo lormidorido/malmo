@@ -1,8 +1,11 @@
 from malmoenv.core import Env
 from gym.spaces import Box
-import cv2, gym
+import cv2, gym, os
 import numpy as np
 import json
+from PIL import Image
+import subprocess
+import matplotlib.pyplot as plt
 
 # Template for creating a Malmo wrapper
 class DummyWrapper(Env):
@@ -85,7 +88,7 @@ class SymbolicObs(Env):
 
     def reset(self):
         obs = self.env.reset()
-        return self.observation(obs)
+        return self.env.reset()
 
     def observation(self, obs):
         if obs is None:
@@ -97,3 +100,86 @@ class SymbolicObs(Env):
             # print("observation shape = {}".format(obs.shape))
             obs = obs / 255.0
         return obs
+
+# Records a video and saves is as a gif
+class VideoRecorder(Env):
+    def __init__(self, env, savepath=""):
+        super(VideoRecorder, self).__init__(env)
+        self.env = env
+        # self.shape = shape # env.observation_space.shape[:2]
+        self.observation_space = env.observation_space
+        self.action_space = env.action_space
+        self.savepath = savepath
+        self.fps = 30
+
+        # store each frame in an array
+        self.frames = []
+        self.episode = 0
+        self.reward = 0
+        self.length = 0
+
+    def step(self, action):
+        obs, r, done, info = self.env.step(action)
+        self.reward += r
+        self.length += 1
+        self.frames.append(obs)
+        if done:
+            self.saveVideo()
+            # Image.save(f"mob_chase_ep_{self.episode}_rew_{self.reward}_len_{self.length}.gif", save_all=True, append_images=self.frames)
+        return obs, r, done, info
+
+    def reset(self):
+        self.episode += 1
+        self.reward = 0
+        self.length = 0
+        obs = self.env.reset()
+        self.frames.append(obs)
+        return obs
+
+    def saveVideo(self):
+        # images are upside down, but they are correct
+        # imgplot = plt.imshow(self.frames[0])
+        # plt.show()
+        filename = f"mob_chase_{self.episode}_{self.length}_{self.reward}.mp4"
+        self.cmdline = ("ffmpeg",
+                        '-nostats',
+                        '-loglevel', 'error',  # suppress warnings
+                        '-y',
+
+                        # input
+                        '-f', 'rawvideo',
+                        '-s:v', '{}x{}'.format(*self.observation_space.shape[:2]),
+                        '-pix_fmt', 'rgb24',
+                        # '-framerate', '%d' % self.fps,
+                        '-i', '-',  # this used to be /dev/stdin, which is not Windows-friendly
+
+                        # output
+                        '-vf', 'scale=trunc(iw/2)*2:trunc(ih/2)*2',
+                        '-vcodec', 'libx264',
+                        '-pix_fmt', 'yuv420p',
+                        '-r', '%d' % self.fps,
+                        filename
+                        )
+
+        print('Starting ffmpeg with "%s"', ' '.join(self.cmdline))
+        if hasattr(os, 'setsid'):  # setsid not present on Windows
+            self.proc = subprocess.Popen(self.cmdline, stdin=subprocess.PIPE, preexec_fn=os.setsid)
+        else:
+            self.proc = subprocess.Popen(self.cmdline, stdin=subprocess.PIPE)
+
+        for frame in self.frames:
+            self.proc.stdin.write(frame.tobytes())
+
+        self.proc.stdin.close()
+        ret = self.proc.wait()
+        if ret != 0:
+            print("VideoRecorder encoder exited with status {}".format(ret))
+
+        # print(f"current working dir in save video {os.getcwd()}")
+        # fourcc = cv2.VideoWriter_fourcc("M", "J", "P", "G")
+        # fps = 30
+        # filename = f"mob_chase_{self.episode}_{self.length}_{self.reward}"
+        # out = cv2.VideoWriter(filename, fourcc, fps, (self.env.observation_space.shape[:2]))
+        # for frame in self.frames:
+        #     out.write(frame)
+        # out.release()

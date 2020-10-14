@@ -1,7 +1,8 @@
 import argparse, os
 import malmoenv
 from pathlib import Path
-from gameai.utils.wrappers import DownsampleObs
+from gameai.utils.wrappers import DownsampleObs, VideoRecorder
+# from gym.wrappers.monitoring.video_recorder import VideoRecorder
 
 def parse_args():
     parser = argparse.ArgumentParser(description='malmoenv arguments')
@@ -43,5 +44,6 @@ def create_env(args):
              episode=args.episode, resync=args.resync,
              reshape=True)
     env.reward_range = (-float('inf'), float('inf'))
-    env = DownsampleObs(env, shape=tuple((84, 84)))
+    # env = DownsampleObs(env, shape=tuple((84, 84)))
+    env = VideoRecorder(env)
     return env
