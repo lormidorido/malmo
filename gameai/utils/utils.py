@@ -1,7 +1,7 @@
 import argparse, os
 import malmoenv
 from pathlib import Path
-from gameai.utils.wrappers import DownsampleObs, VideoRecorder
+from gameai.utils.wrappers import DownsampleObs, VideoRecorder, GifRecorder
 # from gym.wrappers.monitoring.video_recorder import VideoRecorder
 
 def parse_args():

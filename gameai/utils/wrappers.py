@@ -6,6 +6,7 @@ import json
 from PIL import Image
 import subprocess
 import matplotlib.pyplot as plt
+import imageio
 
 # Template for creating a Malmo wrapper
 class DummyWrapper(Env):
@@ -101,12 +102,11 @@ class SymbolicObs(Env):
             obs = obs / 255.0
         return obs
 
-# Records a video and saves is as a gif
-class VideoRecorder(Env):
+class GifRecorder(Env):
+    """ Should use this before modifying the observation space with other wrappers"""
     def __init__(self, env, savepath=""):
-        super(VideoRecorder, self).__init__(env)
+        super(GifRecorder, self).__init__(env)
         self.env = env
-        # self.shape = shape # env.observation_space.shape[:2]
         self.observation_space = env.observation_space
         self.action_space = env.action_space
         self.savepath = savepath
@@ -122,10 +122,9 @@ class VideoRecorder(Env):
         obs, r, done, info = self.env.step(action)
         self.reward += r
         self.length += 1
-        self.frames.append(obs)
+        self.frames.append(cv2.rotate(obs, cv2.ROTATE_180))
         if done:
-            self.saveVideo()
-            # Image.save(f"mob_chase_ep_{self.episode}_rew_{self.reward}_len_{self.length}.gif", save_all=True, append_images=self.frames)
+            self.save_gif()
         return obs, r, done, info
 
     def reset(self):
@@ -133,7 +132,48 @@ class VideoRecorder(Env):
         self.reward = 0
         self.length = 0
         obs = self.env.reset()
-        self.frames.append(obs)
+        self.frames.append(cv2.rotate(obs, cv2.ROTATE_180))
+        return obs
+
+    def save_gif(self):
+        filename = f"mob_chase_{self.episode}_{self.length}_{self.reward}.gif"
+        with imageio.get_writer(filename, mode="I", fps=6) as writer:
+            for frame in self.frames:
+                writer.append_data(frame)
+
+
+# Records a video and saves is as a gif
+class VideoRecorder(Env):
+    def __init__(self, env, savepath=""):
+        super(VideoRecorder, self).__init__(env)
+        self.env = env
+        # self.shape = shape # env.observation_space.shape[:2]
+        self.observation_space = env.observation_space
+        self.action_space = env.action_space
+        self.savepath = savepath
+        self.fps = 12
+
+        # store each frame in an array
+        self.frames = []
+        self.episode = 0
+        self.reward = 0
+        self.length = 0
+
+    def step(self, action):
+        obs, r, done, info = self.env.step(action)
+        self.reward += r
+        self.length += 1
+        self.frames.append(cv2.rotate(obs, cv2.ROTATE_180))
+        if done:
+            self.saveVideo()
+        return obs, r, done, info
+
+    def reset(self):
+        self.episode += 1
+        self.reward = 0
+        self.length = 0
+        obs = self.env.reset()
+        self.frames.append(cv2.rotate(obs, cv2.ROTATE_180))
         return obs
 
     def saveVideo(self):
@@ -150,7 +190,7 @@ class VideoRecorder(Env):
                         '-f', 'rawvideo',
                         '-s:v', '{}x{}'.format(*self.observation_space.shape[:2]),
                         '-pix_fmt', 'rgb24',
-                        # '-framerate', '%d' % self.fps,
+                        '-framerate', '%d' % self.fps,
                         '-i', '-',  # this used to be /dev/stdin, which is not Windows-friendly
 
                         # output
