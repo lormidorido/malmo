@@ -92,29 +92,35 @@ class SymbolicObs(Env):
             it.iternext()
 
         # # todo second method represents each of the cells with 4 entries
-        # if agent_direction == 0:
-        #     # facing north
-        #     agent_pattern[1, 0:2] = palette[agent['name']]
-        #     agent_pattern[0, 0:2] += palette[agent['name']]
-        #     agent_pattern[0, 0:2] /= 2.
-        # elif agent_direction == 1:
-        #     # west
-        #     agent_pattern[0:2, 1] = palette[agent['name']]
-        #     agent_pattern[0:2, 0] += palette[agent['name']]
-        #     agent_pattern[0:2, 0] /= 2.
-        # elif agent_direction == 2:
-        #     # south
-        #     agent_pattern[0, 0:2] = palette[agent['name']]
-        #     agent_pattern[1, 0:2] += palette[agent['name']]
-        #     agent_pattern[1, 0:2] /= 2.
-        # else:
-        #     # east
-        #     agent_pattern[0:2, 0] = palette[agent['name']]
-        #     agent_pattern[0:2, 1] += palette[agent['name']]
-        #     agent_pattern[0:2, 1] /= 2.
-        #
-        # buffer[agent_z * 2:agent_z * 2 + 2,
-        # agent_x * 2:agent_x * 2 + 2] = agent_pattern
+        # todo in this case just add a small value to the agent?
+        for agent in entities:
+            agent_x = int(agent['x'])
+            agent_z = int(agent['z']) + 1
+            agent_pattern = board[agent_z * 2:agent_z * 2 + 2,
+                                   agent_x * 2:agent_x * 2 + 2]
+            if agent_direction == 0:
+                # facing north
+                agent_pattern[1, 0:2] = palette[agent['name']]
+                agent_pattern[0, 0:2] += palette[agent['name']]
+                agent_pattern[0, 0:2] /= 2.
+            elif agent_direction == 1:
+                # west
+                agent_pattern[0:2, 1] = palette[agent['name']]
+                agent_pattern[0:2, 0] += palette[agent['name']]
+                agent_pattern[0:2, 0] /= 2.
+            elif agent_direction == 2:
+                # south
+                agent_pattern[0, 0:2] = palette[agent['name']]
+                agent_pattern[1, 0:2] += palette[agent['name']]
+                agent_pattern[1, 0:2] /= 2.
+            else:
+                # east
+                agent_pattern[0:2, 0] = palette[agent['name']]
+                agent_pattern[0:2, 1] += palette[agent['name']]
+                agent_pattern[0:2, 1] /= 2.
+
+            buffer[agent_z * 2:agent_z * 2 + 2,
+            agent_x * 2:agent_x * 2 + 2] = agent_pattern
 
         # todo add the entities on top of the board
 
