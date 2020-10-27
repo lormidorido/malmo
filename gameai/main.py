@@ -3,7 +3,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 import time
 from MalmoEnv.utils.launcher import launch_minecraft
 from gameai.utils.utils import parse_args, create_env
-from gameai.utils.symbolic_wrapper import MultiEntrySymbolicObs
+from gameai.utils.symbolic_wrapper import MultiEntrySymbolicObs, SymbolicObs
 
 
 if __name__ == "__main__":
@@ -20,7 +20,8 @@ if __name__ == "__main__":
 
     # connects to the previously created instances
     env = create_env(args)
-    env = MultiEntrySymbolicObs(env)
+    env = SymbolicObs(env)
+    # env = MultiEntrySymbolicObs(env)
 
     for i in range(EPISODES):
         obs = env.reset()
