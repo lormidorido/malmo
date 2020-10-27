@@ -1,5 +1,11 @@
 # Malmö #
 
+Project Malmö is a platform for Artificial Intelligence experimentation and research built on top of Minecraft. We aim to inspire a new generation of research into challenging new problems presented by this unique environment.
+
+[![Join the chat at https://gitter.im/Microsoft/malmo](https://badges.gitter.im/Microsoft/malmo.svg)](https://gitter.im/Microsoft/malmo?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Build Status](https://travis-ci.org/Microsoft/malmo.svg?branch=master)](https://travis-ci.org/Microsoft/malmo) [![license](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)](https://github.com/Microsoft/malmo/blob/master/LICENSE.txt)
+----
+    
+
 # Recommended setup method on your own machine
 - 1, clone malmo (```git clone https://github.com/martinballa/malmo```)
 - 2, change branch to "gameai" : ```git checkout gameai```
@@ -7,6 +13,9 @@
 - 4, ```cd malmo/``` and install malmo using pip ```pip install -e MalmoEnv/``` 
 - 5, Test if Malmo works correctly by running ```main.py``` in the ```gameai``` folder
 - (optional): to run malmo headless on a linux headless server you should install xvfb ```sudo apt-get install -y xvfb```
+
+*Note:* Minecraft uses gradle to build the project and it's not compatible with newer versions of Java, so make sure that you use java version 8 for the build. Make sure that $JAVA_HOME is pointing to the correct version.
+
 
 # Running on the ITL machines 
 
@@ -41,13 +50,22 @@ Instance manager + mission file + arguments
 
 When starting the Malmo instances it might take some time. Note that when using more than one instances ```launch_minecraft``` creates copies of the Minecraft directory in ```/tmp``` as each Minecraft instance requires its own directory. This process can take time.
 
+### Setting JAVA_HOME on Ubuntu this can be done 
+```
+sudo gedit /etc/profile
+```
+And add the following lines to the end, where ```<JDK dir>``` is the correct directory for java 8 on your system.
+```
+JAVA_HOME=/usr/lib/jvm/<JDK dir>
+PATH=$PATH:$HOME/bin:$JAVA_HOME/bin
+export JAVA_HOME
+export JRE_HOME
+export PATH
+```
+Log out and log back in to update the profile settings.
+
 # Original Readme below
 
-Project Malmö is a platform for Artificial Intelligence experimentation and research built on top of Minecraft. We aim to inspire a new generation of research into challenging new problems presented by this unique environment.
-
-[![Join the chat at https://gitter.im/Microsoft/malmo](https://badges.gitter.im/Microsoft/malmo.svg)](https://gitter.im/Microsoft/malmo?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Build Status](https://travis-ci.org/Microsoft/malmo.svg?branch=master)](https://travis-ci.org/Microsoft/malmo) [![license](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)](https://github.com/Microsoft/malmo/blob/master/LICENSE.txt)
-----
-    
 ## Getting Started ##
 
 ### MalmoEnv ###
