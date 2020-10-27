@@ -1,12 +1,12 @@
 import argparse, os
 import malmoenv
 from pathlib import Path
-from gameai.utils.wrappers import DownsampleObs
-from gameai.utils.symbolic_wrapper import SymbolicObs, MultiEntrySymbolicObs
+from gameai.utils.wrappers import DownsampleObs, VideoRecorder, GifRecorder
+# from gym.wrappers.monitoring.video_recorder import VideoRecorder
 
 def parse_args():
     parser = argparse.ArgumentParser(description='malmoenv arguments')
-    parser.add_argument('--mission', type=str, metavar="\b", default='../MalmoEnv/missions/mobchase_single_agent.xml',
+    parser.add_argument('--mission', type=str, default='../MalmoEnv/missions/mobchase_single_agent.xml',
                         help='the mission xml')
     parser.add_argument('--port', type=int, default=10000, help='the mission server port')
     parser.add_argument('--server', type=str, default='127.0.0.1', help='the mission server DNS or IP address')
@@ -44,6 +44,7 @@ def create_env(args):
              episode=args.episode, resync=args.resync,
              reshape=True)
     env.reward_range = (-float('inf'), float('inf'))
+    env = VideoRecorder(env)
     # env = DownsampleObs(env, shape=tuple((84, 84)))
     # env = MultiEntrySymbolicObs(env)
     return env

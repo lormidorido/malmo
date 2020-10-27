@@ -1,8 +1,12 @@
 from malmoenv.core import Env
 from gym.spaces import Box
-import cv2, gym
+import cv2, gym, os
 import numpy as np
 import json
+from PIL import Image
+import subprocess
+import matplotlib.pyplot as plt
+import imageio
 
 # Template for creating a Malmo wrapper
 class DummyWrapper(Env):
@@ -58,3 +62,164 @@ class DownsampleObs(Env):
                 obs = np.expand_dims(obs, -1)
             obs = obs / 255.0
         return obs
+
+# wrapper to extract symbolic representation from malmo
+class SymbolicObs(Env):
+    def __init__(self, env, shape):
+        super(SymbolicObs, self).__init__(env)
+        self.env = env
+        self.shape = shape # env.observation_space.shape[:2]
+        self.observation_space = Box(low=0, high=255, shape=self.shape + env.observation_space.shape[2:], dtype=np.uint8)
+        self.action_space = env.action_space
+        self.board_shape = (11, 11)
+
+    def step(self, action):
+        # todo https://github.com/microsoft/malmo-challenge/blob/a1dec75d0eb4cccc91f9d818a4ecae5fa1ac906f/ai_challenge/pig_chase/environment.py
+        # link above seem to be useful for this wrapper
+        print("stepping, action = {}".format(action))
+        obs, r, done, info = self.env.step(action)
+        # print("step obs = {}".format(obs))
+        obs = self.observation(obs)
+        # info = {"raw_info": info}
+        symb_state = json.loads(info["raw_info"])
+        board = np.reshape(symb_state["board"], newshape=(11, 11))
+        agent = symb_state["entities"][0]
+        chicken = symb_state["entities"][1]
+        return obs, r, done, info
+
+    def reset(self):
+        obs = self.env.reset()
+        return self.env.reset()
+
+    def observation(self, obs):
+        if obs is None:
+            print("obs is None")
+        else:
+            obs = cv2.resize(obs, self.shape[::-1], interpolation=cv2.INTER_AREA)
+            if obs.ndim == 2:
+                obs = np.expand_dims(obs, -1)
+            # print("observation shape = {}".format(obs.shape))
+            obs = obs / 255.0
+        return obs
+
+class GifRecorder(Env):
+    """ Should use this before modifying the observation space with other wrappers"""
+    def __init__(self, env, savepath=""):
+        super(GifRecorder, self).__init__(env)
+        self.env = env
+        self.observation_space = env.observation_space
+        self.action_space = env.action_space
+        self.savepath = savepath
+        self.fps = 30
+
+        # store each frame in an array
+        self.frames = []
+        self.episode = 0
+        self.reward = 0
+        self.length = 0
+
+    def step(self, action):
+        obs, r, done, info = self.env.step(action)
+        self.reward += r
+        self.length += 1
+        self.frames.append(cv2.rotate(obs, cv2.ROTATE_180))
+        if done:
+            self.save_gif()
+        return obs, r, done, info
+
+    def reset(self):
+        self.episode += 1
+        self.reward = 0
+        self.length = 0
+        obs = self.env.reset()
+        self.frames.append(cv2.rotate(obs, cv2.ROTATE_180))
+        return obs
+
+    def save_gif(self):
+        filename = f"mob_chase_{self.episode}_{self.length}_{self.reward}.gif"
+        with imageio.get_writer(filename, mode="I", fps=6) as writer:
+            for frame in self.frames:
+                writer.append_data(frame)
+
+
+# Records a video and saves is as a gif
+class VideoRecorder(Env):
+    def __init__(self, env, savepath=""):
+        super(VideoRecorder, self).__init__(env)
+        self.env = env
+        # self.shape = shape # env.observation_space.shape[:2]
+        self.observation_space = env.observation_space
+        self.action_space = env.action_space
+        self.savepath = savepath
+        self.fps = 12
+
+        # store each frame in an array
+        self.frames = []
+        self.episode = 0
+        self.reward = 0
+        self.length = 0
+
+    def step(self, action):
+        obs, r, done, info = self.env.step(action)
+        self.reward += r
+        self.length += 1
+        self.frames.append(cv2.rotate(obs, cv2.ROTATE_180))
+        if done:
+            self.saveVideo()
+        return obs, r, done, info
+
+    def reset(self):
+        self.episode += 1
+        self.reward = 0
+        self.length = 0
+        obs = self.env.reset()
+        self.frames.append(cv2.rotate(obs, cv2.ROTATE_180))
+        return obs
+
+    def saveVideo(self):
+        # images are upside down, but they are correct
+        # imgplot = plt.imshow(self.frames[0])
+        # plt.show()
+        filename = f"mob_chase_{self.episode}_{self.length}_{self.reward}.mp4"
+        self.cmdline = ("ffmpeg",
+                        '-nostats',
+                        '-loglevel', 'error',  # suppress warnings
+                        '-y',
+
+                        # input
+                        '-f', 'rawvideo',
+                        '-s:v', '{}x{}'.format(*self.observation_space.shape[:2]),
+                        '-pix_fmt', 'rgb24',
+                        '-framerate', '%d' % self.fps,
+                        '-i', '-',  # this used to be /dev/stdin, which is not Windows-friendly
+
+                        # output
+                        '-vf', 'scale=trunc(iw/2)*2:trunc(ih/2)*2',
+                        '-vcodec', 'libx264',
+                        '-pix_fmt', 'yuv420p',
+                        '-r', '%d' % self.fps,
+                        filename
+                        )
+
+        print('Starting ffmpeg with "%s"', ' '.join(self.cmdline))
+        if hasattr(os, 'setsid'):  # setsid not present on Windows
+            self.proc = subprocess.Popen(self.cmdline, stdin=subprocess.PIPE, preexec_fn=os.setsid)
+        else:
+            self.proc = subprocess.Popen(self.cmdline, stdin=subprocess.PIPE)
+
+        for frame in self.frames:
+            self.proc.stdin.write(frame.tobytes())
+
+        self.proc.stdin.close()
+        ret = self.proc.wait()
+        if ret != 0:
+            print("VideoRecorder encoder exited with status {}".format(ret))
+
+        # print(f"current working dir in save video {os.getcwd()}")
+        # fourcc = cv2.VideoWriter_fourcc("M", "J", "P", "G")
+        # fps = 30
+        # filename = f"mob_chase_{self.episode}_{self.length}_{self.reward}"
+        # out = cv2.VideoWriter(filename, fourcc, fps, (self.env.observation_space.shape[:2]))
+        # for frame in self.frames:
+        #     out.write(frame)
+        # out.release()
