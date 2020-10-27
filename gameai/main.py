@@ -4,10 +4,12 @@ import time
 from MalmoEnv.utils.launcher import launch_minecraft
 from gameai.utils.utils import parse_args, create_env
 from gameai.utils.symbolic_wrappers import MultiEntrySymbolicObs, SymbolicObs
+from gameai.utils.wrappers import ScreenCapturer, DownsampleObs
 
 
 if __name__ == "__main__":
     args = parse_args()
+    args.port = 10001
     # args.mission = '../MalmoEnv/missions/pig_chase.xml'
     NUM_ENVS = 1
     EPISODES = 5
@@ -16,11 +18,13 @@ if __name__ == "__main__":
     # launch_minecraft blocks until all instances are set up
     GAME_INSTANCE_PORTS = [args.port + i for i in range(NUM_ENVS)]
     launch_script = "./launchClient_quiet.sh" #"./launchClient_headless.sh" #
-    instances = launch_minecraft(GAME_INSTANCE_PORTS, launch_script=launch_script)
+    # instances = launch_minecraft(GAME_INSTANCE_PORTS, launch_script=launch_script)
 
     # connects to the previously created instances
     env = create_env(args)
-    env = SymbolicObs(env)
+    # env = DownsampleObs(env, shape=(84, 84))
+    env = ScreenCapturer(env)
+    # env = SymbolicObs(env)
     # env = MultiEntrySymbolicObs(env)
 
     for i in range(EPISODES):
