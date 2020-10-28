@@ -4,7 +4,6 @@ import cv2, gym
 import numpy as np
 import json
 import ffmpeg
-import matplotlib.pyplot as plt
 
 # Template for creating a Malmo wrapper
 class DummyWrapper(Env):

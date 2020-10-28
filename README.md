@@ -4,7 +4,7 @@ Project Malmö is a platform for Artificial Intelligence experimentation and res
 
 [![Join the chat at https://gitter.im/Microsoft/malmo](https://badges.gitter.im/Microsoft/malmo.svg)](https://gitter.im/Microsoft/malmo?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Build Status](https://travis-ci.org/Microsoft/malmo.svg?branch=master)](https://travis-ci.org/Microsoft/malmo) [![license](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)](https://github.com/Microsoft/malmo/blob/master/LICENSE.txt)
 ----
-![malmo](gameai/malmo_e1_l56.00_r-50.00.gif) 
+![malmo](gameai/imgs/malmo_e1_l56.00_r-50.00.gif) 
 
 <!-- <img src="gameai/malmo_e1_l56.00_r-50.00.gif" alt="malmo gif">-->
 
@@ -33,13 +33,25 @@ python -m venv <venv> # <venv> is the name of you virtualenv i.e: "malmoenv" or 
 source <venv>/bin/activate
 
 # install opencv and malmoenv
-pip install opencv-python
+pip install -r gameai/requirements.txt
 pip install -e MalmoEnv/
 
 cd gameai
 python main.py
 # this should startup Minecraft and display it on the screen. Note that his might take 1-2 minutes.
 ```
+
+## Symbolic Observations
+The symbolic representations shows a top-down perspective of the environment. There are 2 implementations to extract symbolic representations from Malmo, they are currently specific to the mob_chase_single.xml mission, but can be adapted to any other mission.
+
+### SymbolicObs wrapper
+Represent each cell as a single entry on the grid. The entries are mapped to RGB or Grayscale colours, depending on the arguments passed to the wrapper. As each entity (agents, chicken, pig) have direction, these directions are represented by adding a small value to the agent's colour in each direction.
+![](gameai/imgs/symbObs.png)
+
+### MultiEntrySymbolicObs wrapper
+Represent each cell with 4 values, to better represent the direction and the layers (if the agent is standing on the grass both grass and the agent are visible). Directions are represented by placing the entity in the correct direction on the grid.
+ ![](gameai/imgs/multiEntryObs.png)
+
 
 ## Changes from Master
 - added examples and merged repo for easier setup - no need to setup both malmo and the example project

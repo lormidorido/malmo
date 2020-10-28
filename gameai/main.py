@@ -23,8 +23,8 @@ if __name__ == "__main__":
     # connects to the previously created instances
     env = create_env(args)
     # env = DownsampleObs(env, shape=(84, 84))
-    env = ScreenCapturer(env, size=(200, 200))
-    # env = SymbolicObs(env)
+    # env = ScreenCapturer(env, size=(200, 200))
+    env = SymbolicObs(env)
     # env = MultiEntrySymbolicObs(env)
 
     for i in range(EPISODES):
