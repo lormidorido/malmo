@@ -94,6 +94,13 @@ class SymbolicObs(Env):
         for agent in entities:
             agent_x = int(agent['x'])
             agent_z = int(agent['z']) + 1
+
+            # make sure that entity is within the given range
+            if agent_x < 0 or agent_x >= self.shape[0]:
+                break
+            if agent_z < 0 or agent_z >= self.shape[1]:
+                break
+
             original_tile = board[agent_z, agent_x]
             agent_value = self.palette[agent["name"]]
             if agent_direction == 0:
