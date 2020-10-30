@@ -78,6 +78,19 @@ export PATH
 ```
 Log out and log back in to update the profile settings.
 
+### Installing Java 8 on Mac
+If you use multiple java versions, it is recommended to install jenv. [This is a useful post on how to install and use it](https://medium.com/@brunofrascino/working-with-multiple-java-versions-in-macos-9a9c4f15615a)
+```
+# Download java8 
+brew cask install adoptopenjdk/openjdk/adoptopenjdk8
+
+# Install jenv to set java8 as the global version on your Mac
+brew install jenv
+jenv add /Library/Java/JavaVirtualMachines/<jdk8>/Contents/Home
+jenv versions
+jenv global 1.8 #(the jdk version pointing to 8)
+```
+
 # Original Readme below
 
 ## Getting Started ##
