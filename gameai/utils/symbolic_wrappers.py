@@ -13,12 +13,13 @@ RGB_PALETTE = {
     'clay': [127, 95, 63],
     'grass': [132, 192, 17],
     'lapis_block': [190, 190, 255],
-    'Agent0': [255, 0, 0],
-    'Agent1': [0, 0, 255],
-    'Chicken': [246, 236, 133],
+    'Agent0': [192, 0, 0],
+    'Agent1': [0, 0, 192],
+    'Chicken': [190, 190, 133],
     'egg': [255, 245, 195],
     'Pig': [155, 192, 203],
-    'brick_block': [132, 31, 39]
+    'brick_block': [132, 31, 39],
+    'direction': [10, 10, 10]
 }
 
 GRAY_PALETTE = {
@@ -31,7 +32,8 @@ GRAY_PALETTE = {
     'Chicken': 0,
     'egg': 15,
     'Pig': 30,
-    'brick_block': 120
+    'brick_block': 120,
+    'direction': 10
 }
 
 # wrapper to extract symbolic representation from malmo
@@ -103,18 +105,8 @@ class SymbolicObs(Env):
 
             original_tile = board[agent_z, agent_x]
             agent_value = self.palette[agent["name"]]
-            if agent_direction == 0:
-                # facing north
-                agent_value += 10
-            elif agent_direction == 1:
-                # west
-                agent_value += 20
-            elif agent_direction == 2:
-                # south
-                agent_value += 30
-            else:
-                # east
-                agent_value += 40
+            agent_value += np.multiply(self.palette['direction'], (agent_direction + 1))
+            agent_value = np.clip(agent_value, 0, 255) # make sure that values are in range
 
             obs[agent_z, agent_x] = agent_value
 

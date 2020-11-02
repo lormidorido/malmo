@@ -24,7 +24,7 @@ if __name__ == "__main__":
     env = create_env(args)
     # env = DownsampleObs(env, shape=(84, 84))
     # env = ScreenCapturer(env, size=(200, 200))
-    env = SymbolicObs(env)
+    env = SymbolicObs(env, gray=False)
     # env = MultiEntrySymbolicObs(env)
 
     for i in range(EPISODES):
