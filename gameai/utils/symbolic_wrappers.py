@@ -42,7 +42,7 @@ class SymbolicObs(Env):
         self.env = env
         self.shape = shape
         self.channels = 1 if bool(gray) else 3
-        self.observation_space = Box(low=0, high=255, shape=shape, dtype=np.uint8)
+        self.observation_space = Box(low=0, high=255, shape=shape + (self.channels, ), dtype=np.uint8)
         self.action_space = env.action_space
 
         # wrapper specific variables
@@ -131,7 +131,7 @@ class MultiEntrySymbolicObs(Env):
         self.env = env
         self.raw_shape = shape
         self.channels = 1 if bool(gray) else 3
-        self.observation_space = Box(low=0, high=255, shape=(shape[0]*2, shape[1]*2), dtype=np.uint8)
+        self.observation_space = Box(low=0, high=255, shape=(shape[0]*2, shape[1]*2, self.channels), dtype=np.uint8)
         self.action_space = env.action_space
 
         # wrapper specific variables
