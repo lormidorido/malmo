@@ -1,7 +1,7 @@
 import argparse, os
 import malmoenv
 from pathlib import Path
-from gameai.utils.wrappers import DownsampleObs
+# from gameai.utils.wrappers import DownsampleObs
 
 def parse_args():
     parser = argparse.ArgumentParser(description='malmoenv arguments')
