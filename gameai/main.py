@@ -3,8 +3,8 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 import time
 from MalmoEnv.utils.launcher import launch_minecraft
 from gameai.utils.utils import parse_args, create_env
-from gameai.utils.symbolic_wrappers import MultiEntrySymbolicObs, SymbolicObs
-from gameai.utils.wrappers import ScreenCapturer, DownsampleObs
+# from gameai.utils.symbolic_wrappers import MultiEntrySymbolicObs, SymbolicObs
+# from gameai.utils.wrappers import ScreenCapturer, DownsampleObs
 
 
 if __name__ == "__main__":
@@ -24,7 +24,7 @@ if __name__ == "__main__":
     env = create_env(args)
     # env = DownsampleObs(env, shape=(84, 84))
     # env = ScreenCapturer(env, size=(200, 200))
-    env = SymbolicObs(env, gray=False)
+    # env = SymbolicObs(env, gray=False)
     # env = MultiEntrySymbolicObs(env)
 
     for i in range(EPISODES):
