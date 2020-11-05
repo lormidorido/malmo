@@ -20,7 +20,7 @@ if __name__ == "__main__":
     # launch_minecraft blocks until all instances are set up
     GAME_INSTANCE_PORTS = [args.port + i for i in range(NUM_ENVS)]
     launch_script = "./launchClient_quiet.sh" #"./launchClient_headless.sh" #
-    # instances = launch_minecraft(GAME_INSTANCE_PORTS, launch_script=launch_script)
+    instances = launch_minecraft(GAME_INSTANCE_PORTS, launch_script=launch_script)
 
     # connects to the previously created instances
     env = create_env(args)
