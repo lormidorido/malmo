@@ -9,6 +9,8 @@ import json
 
 # Each entity in the environment requires a colour mapping to use with the wrapper
 RGB_PALETTE = {
+    'air': [255, 255, 255],
+    'gold_block': [255, 223, 0],
     'sand': [194, 178, 128],
     'clay': [127, 95, 63],
     'grass': [132, 192, 17],
@@ -144,7 +146,8 @@ class MultiEntrySymbolicObs(Env):
     def reset(self):
         # info is not received on reset, so an empty observation is sent instead to the agent
         obs = self.env.reset()
-        return np.zeros(self.observation_space.shape)
+        self.last_obs = np.zeros(self.observation_space.shape)
+        return self.last_obs
         # return self.extract_representation(obs)
 
     def extract_representation(self, info):
