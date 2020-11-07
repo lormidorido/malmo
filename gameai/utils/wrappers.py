@@ -2,7 +2,6 @@ from malmoenv.core import Env
 from gym.spaces import Box
 import cv2, gym
 import numpy as np
-import json
 import ffmpeg
 
 # Template for creating a Malmo wrapper
