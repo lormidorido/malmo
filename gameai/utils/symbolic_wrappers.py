@@ -1,6 +1,5 @@
 # this wrapper is based on the state builder from malmo-challenge
 # https://github.com/microsoft/malmo-challenge/
-from gameai.utils.common import Entity
 from malmoenv.core import Env
 from gym.spaces import Box
 import cv2, gym
