@@ -1,9 +1,9 @@
 import os, sys
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import time
-from MalmoEnv.utils.launcher import launch_minecraft
+from malmoenv.utils.launcher import launch_minecraft
 from gameai.utils.utils import parse_args, create_env
-from gameai.utils.symbolic_wrappers import MultiEntrySymbolicObs, SymbolicObs
+from gameai.utils.symbolic_wrappers import MultiEntrySymbolicObs
 # from gameai.utils.wrappers import ScreenCapturer, DownsampleObs
 import matplotlib.pyplot as plt
 
