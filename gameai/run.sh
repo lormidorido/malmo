@@ -3,7 +3,7 @@
 #$ -j y
 #$ -pe smp 8
 #$ -l h_vmem=8G
-#$ -l h_rt=6:0:0
+#$ -l h_rt=1:0:0
 
 module load singularity/3.6.1
 module load python/3.6.3
