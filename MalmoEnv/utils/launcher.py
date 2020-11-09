@@ -48,7 +48,7 @@ def launch_minecraft(ports, launch_script=DEFAULT_SCRIPT, keep_alive=False):
             args.append("--keepalive")
 
         proc = subprocess.Popen(args,
-            stdout=subprocess.PIPE, stderr=subprocess.PIPE
+            # stdout=subprocess.PIPE, stderr=subprocess.PIPE
         )
         minecraft_instances.append(proc)
 
