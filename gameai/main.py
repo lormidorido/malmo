@@ -26,9 +26,11 @@ if __name__ == "__main__":
     # env = ScreenCapturer(env, size=(200, 200))
     # env = SymbolicObs(env, gray=False)
     # env = MultiEntrySymbolicObs(env)
+    print("env created")
 
     for i in range(EPISODES):
         obs = env.reset()
+        print("env reset")
         steps = 0
         total_rewards = 0
         done = False
