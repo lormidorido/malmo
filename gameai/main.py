@@ -17,7 +17,7 @@ if __name__ == "__main__":
     # launch minecraft instances, that will be used later
     # launch_minecraft blocks until all instances are set up
     GAME_INSTANCE_PORTS = [args.port + i for i in range(NUM_ENVS)]
-    launch_script = "./launchClient_quiet.sh"# "./launchClient_apocrita.sh"
+    launch_script = "./launchClient_apocrita.sh" #"./launchClient_quiet.sh"# "./launchClient_apocrita.sh"
     instances = launch_minecraft(GAME_INSTANCE_PORTS, launch_script=launch_script)
 
     # connects to the previously created instances
