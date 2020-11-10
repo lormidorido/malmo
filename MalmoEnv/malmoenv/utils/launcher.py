@@ -118,7 +118,7 @@ def _launch_minecraft_direct(launch_script, port, keep_alive):
     # Make a copy of Minecraft into a unique temp directory as it's not possible to run multiple
     # instances from a single Minecraft directory
     target_dir = tempfile.mkdtemp(prefix="malmo_") + "/malmo"
-    source_dir = str(pathlib.Path(__file__).parent.absolute()) + "/../.."
+    source_dir = str(pathlib.Path(__file__).parent.absolute()) + "/../../.."
     print(f"Cloning {source_dir} into {target_dir}...")
     shutil.copytree(source_dir, target_dir)
 
