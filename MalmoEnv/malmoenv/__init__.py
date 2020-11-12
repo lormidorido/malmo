@@ -18,5 +18,6 @@
 # ------------------------------------------------------------------------------------------------
 
 from malmoenv.core import ActionSpace, StringActionSpace, VisualObservationSpace, Env, SyncEnv, make
+from malmoenv.utils.launcher import launch_minecraft
 
-__all__ = ['ActionSpace', 'StringActionSpace', 'VisualObservationSpace', 'Env', 'SyncEnv', 'make']
+__all__ = ['ActionSpace', 'StringActionSpace', 'VisualObservationSpace', 'Env', 'SyncEnv', 'make', 'launch_minecraft']
