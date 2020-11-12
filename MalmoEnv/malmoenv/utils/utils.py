@@ -9,8 +9,6 @@ def parse_args():
                         help='the mission xml')
     parser.add_argument('--port', type=int, default=10000, help='the mission server port')
     parser.add_argument('--server', type=str, default='127.0.0.1', help='the mission server DNS or IP address')
-    # todo next 2 arguments can be removed
-    # https://github.com/elpollouk/malmo/blob/elpollouk/MultiAgentEnv/MalmoEnv/rllib_train.py
     parser.add_argument('--port2', type=int, default=None,
                         help="(Multi-agent) role N's mission port. Defaults to server port.")
     parser.add_argument('--server2', type=str, default=None, help="(Multi-agent) role N's server DNS or IP")
@@ -32,10 +30,11 @@ def parse_args():
     return args
 
 def create_env(args):
-    xml = Path(args.mission).read_text()
+    # Example environment creator
+    mission_xml = Path(args.mission).read_text()
     env = malmoenv.make()
     print(f"create env listening on port {args.port}")
-    env.init(xml, args.port,
+    env.init(mission_xml, args.port,
              server=args.server,
              server2=args.server2, port2=args.port2,
              role=args.role,
@@ -43,6 +42,4 @@ def create_env(args):
              episode=args.episode, resync=args.resync,
              reshape=True)
     env.reward_range = (-float('inf'), float('inf'))
-    # env = DownsampleObs(env, shape=tuple((84, 84)))
-    # env = MultiEntrySymbolicObs(env)
     return env

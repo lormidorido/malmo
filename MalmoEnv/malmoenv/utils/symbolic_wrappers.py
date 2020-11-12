@@ -7,6 +7,7 @@ import numpy as np
 import json
 
 # Each entity in the environment requires a colour mapping to use with the wrapper
+# In new environments each object/tile type should have a colour mapping like shown below
 RGB_PALETTE = {
     'sand': [194, 178, 128],
     'clay': [127, 95, 63],
