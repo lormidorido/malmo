@@ -132,10 +132,10 @@ def _launch_minecraft_direct(launch_script, port, keep_alive):
         spawn = keep_alive
 
     print(f"Exit code: {rc}")
-    print("File content: ")
-    with open(target_dir + "/out.txt", 'r') as file:
-        for line in file.readlines():
-            print(line)
+    # print("File content: ")
+    # with open(target_dir + "/out.txt", 'r') as file:
+    #     for line in file.readlines():
+    #         print(line)
 
 if __name__ == '__main__':
     args = _parse_args()
