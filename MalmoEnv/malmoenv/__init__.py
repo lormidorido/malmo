@@ -19,5 +19,8 @@
 
 from malmoenv.core import ActionSpace, StringActionSpace, VisualObservationSpace, Env, SyncEnv, make
 from malmoenv.utils.launcher import launch_minecraft
+from malmoenv.utils.wrappers import DownsampleObs
+from malmoenv.utils.symbolic_wrappers import MultiEntrySymbolicObs, SymbolicObs
 
-__all__ = ['ActionSpace', 'StringActionSpace', 'VisualObservationSpace', 'Env', 'SyncEnv', 'make', 'launch_minecraft']
+__all__ = ['ActionSpace', 'StringActionSpace', 'VisualObservationSpace', 'Env', 'SyncEnv', 'make', 'launch_minecraft',
+           'DownsampleObs', 'MultiEntrySymbolicObs', 'SymbolicObs']
